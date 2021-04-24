@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.poppetx">
+    package="com.poppet.poppetx">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
@@ -19,7 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PoppetX">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.poppet.poppetx.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,4 +1,4 @@
-package com.example.poppetx;
+package com.poppet.poppetx;
 
 import org.junit.Test;
 
