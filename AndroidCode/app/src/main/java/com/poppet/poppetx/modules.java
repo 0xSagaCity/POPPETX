@@ -1,4 +1,4 @@
- package com.poppet.poppetx;
+package com.poppet.poppetx;
 
 import android.app.Activity;
 import android.content.ClipDescription;
