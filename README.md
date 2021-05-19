@@ -1,18 +1,18 @@
 <h1 align="center">
   <br>
-<a href="https://imgur.com/li6jEto"><img src="https://i.imgur.com/li6jEto.png" title="source: imgur.com" width="200" height="200" /></a> 
+<a href="https://imgur.com/li6jEto"><img src="https://i.imgur.com/li6jEto.png" title="source: imgur.com" width="200" height="200" /></a>
   <br>
- POPPETX 
+ POPPETX
 </h1>
 
 ___
 ## What does what?
 
 1. **MainActivity.java**
-</br> This currently has just a small chunk that executes `socketWork.java` when onCreate gets called. 
-  
-2. **socketWork.java** __
-</br> This contains our TCP Socket Stuff 
+</br> This currently has just a small chunk that executes `socketWork.java` when onCreate gets called.
+
+2. **socketWork.java**
+</br> This contains our TCP Socket Stuff
 </br> The IP address and PORT values need to be stored in `NetworkConfig.java`
 </br> This also executes some module from `module.java` and returns the output back
 </br> One exception to this is the takePhoto module that sends the data back in a new thread refer [here](https://github.com/0xSagaCity/POPPETX/blob/main/AndroidCode/app/src/main/java/com/poppet/poppetx/modules.java#L149)
@@ -24,7 +24,7 @@ ___
 
 ## TODO
 - [x] Merge takeSelfie and takePhoto in one single method
-- [x] Clean some code and make `server.py` not just print stuff but write stuff in files. 
+- [x] Clean some code and make `server.py` not just print stuff but write stuff in files.
 - [ ] Add a broadcastReciever to start the app every time device boots.
 - [ ] Add a Scheduler that would execute socketWork in background and not just when `onCreate` from `MainActivity` is called.
 - [ ] Handle Runtime Permission Checks when trying to extract Contacts from the device.

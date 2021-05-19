@@ -23,9 +23,7 @@ import java.io.OutputStream;
 import java.sql.Date;
 
 public class modules {
-
     static final String END_HEADER = "POPPETX321";
-
     public static String getContactNumbers(Context mContext) {
         String allContacts = null;
         Cursor phones = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);

