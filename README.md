@@ -5,7 +5,6 @@
  POPPETX
 </h1>
 
-___
 ## What does what?
 
 1. **MainActivity.java**
@@ -35,5 +34,5 @@ ___
 >There is a plan to write a complete documentation of what part of RAT does what.
 >What real malware has done something like this.
 >What part does one need to look for while looking through a reversed malware and stuff.
-___
+
 <div>Image used is from <a href="https://smashicons.com/" title="Smashicons">Smashicons </a>
