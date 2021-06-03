@@ -15,12 +15,12 @@ import static com.poppet.config.NetworkConfig.END_HEADER;
 
 public class takePhoto {
 
-    public static String takePhoto(int cameraFace, Context mContext, OutputStream out) {
+    public static String clickPhoto(int cameraFace, Context mContext, OutputStream out) {
         StringBuffer entireEncodedImage = new StringBuffer();
         Camera camera;
         int cameraId = -1;
 
-        if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+        if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             int totalCameras = Camera.getNumberOfCameras();
             //Loop through all camera Id's to find Relevant Camera
             for (int i = 0; i < totalCameras; i++) {

